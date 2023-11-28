@@ -10,6 +10,8 @@ const WINDOW_HEIGHT: f32 = 480.0;
 
 const PADDLE_SPEED: f32 = 8.0;
 
+const BALL_SPEED: f32 = 5.0;
+
 fn main() -> tetra::Result {
 	ContextBuilder::new("Pong", WINDOW_WIDTH as i32, WINDOW_HEIGHT as i32)
 		.quit_on_escape(true)
@@ -42,11 +44,12 @@ impl GameState {
 			WINDOW_HEIGHT / 2.0 - ball_texture.width() as f32 / 2.0,
 			WINDOW_HEIGHT / 2.0 - ball_texture.height() as f32 / 2.0,
 		);
+		let ball_velocity = Vec2::new(-BALL_SPEED, 0.0);
 
         Ok(GameState {
             player1: Entity::new(player1_texture, player1_position),
             player2: Entity::new(player2_texture, player2_position),
-			ball: Entity::new(ball_texture, ball_position),
+			ball: Entity::with_velocity(ball_texture, ball_position, ball_velocity),
         })
     }
 }
@@ -74,10 +77,12 @@ impl State for GameState {
         }
 
         let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
-        let player2_position = Vec2::new(
+        let _player2_position = Vec2::new(
             WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
             (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
         );
+
+		self.ball.position += self.ball.velocity;
 
 		Ok(())
 
@@ -96,11 +101,20 @@ impl State for GameState {
 
 struct Entity {
 	texture: Texture,
-	position: Vec2<f32>
+	position: Vec2<f32>,
+	velocity: Vec2<f32>,
 }
 
 impl Entity {
     fn new(texture: Texture, position: Vec2<f32>) -> Entity {
-        Entity { texture, position }
+		Entity::with_velocity(texture, position, Vec2::zero())
     }
+
+	fn with_velocity(texture: Texture, position: Vec2<f32>, velocity: Vec2<f32>) -> Entity {
+		Entity {
+			texture,
+			position,
+			velocity,
+		}
+	}
 }
