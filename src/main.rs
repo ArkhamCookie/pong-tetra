@@ -16,43 +16,80 @@ fn main() -> tetra::Result {
 }
 
 struct GameState {
-	paddle_texture: Texture,
-	paddle_position: Vec2<f32>,
+    player1: Entity,
+    player2: Entity,
 }
 
 impl State for GameState {
+	fn update(&mut self, ctx: &mut Context) -> tetra::Result {
+		// Player 1 move up
+		if input::is_key_down(ctx, Key::W) {
+			self.player1.position.y -= PADDLE_SPEED;
+		}
+
+		// Player 1 move down
+		if input::is_key_down(ctx, Key::S) {
+			self.player1.position.y += PADDLE_SPEED;
+		}
+
+		// Player 2 move up
+        if input::is_key_down(ctx, Key::Up) {
+			self.player2.position.y -= PADDLE_SPEED;
+        }
+
+		// Player 2 move down
+        if input::is_key_down(ctx, Key::Down) {
+            self.player2.position.y += PADDLE_SPEED;
+        }
+
+        let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
+        let player2_position = Vec2::new(
+            WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
+            (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
+        );
+
+		Ok(())
+
+	}
+
 	fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
 		graphics::clear(ctx, Color::rgb(0.1, 0.5, 0.9));
 
-		self.paddle_texture.draw(ctx, self.paddle_position);
-
-		Ok(())
-	}
-
-	fn update(&mut self, ctx: &mut Context) -> tetra::Result {
-		// Move up
-		if input::is_key_down(ctx, Key::W) {
-			self.paddle_position.y -= PADDLE_SPEED;
-		}
-
-		// Move down
-		if input::is_key_down(ctx, Key::S) {
-			self.paddle_position.y += PADDLE_SPEED;
-		}
+        self.player1.texture.draw(ctx, self.player1.position);
+        self.player2.texture.draw(ctx, self.player2.position);
 
 		Ok(())
 	}
 }
 
 impl GameState {
-	fn new(ctx: &mut Context) -> tetra::Result<GameState> {
-		let paddle_texture = Texture::new(ctx, "./src/assets/paddleBlue.png")?;
-		let paddle_position =
-        	Vec2::new(16.0, (WINDOW_HEIGHT - paddle_texture.height() as f32) / 2.0);
+    fn new(ctx: &mut Context) -> tetra::Result<GameState> {
+        let player1_texture = Texture::new(ctx, "./src/assets/paddleBlue.png")?;
+        let player1_position = Vec2::new(
+            16.0,
+            (WINDOW_HEIGHT - player1_texture.height() as f32) / 2.0,
+        );
 
-		Ok(GameState {
-			paddle_texture,
-			paddle_position,
-		})
-	}
+        let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
+        let player2_position = Vec2::new(
+            WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
+            (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
+        );
+
+        Ok(GameState {
+            player1: Entity::new(player1_texture, player1_position),
+            player2: Entity::new(player2_texture, player2_position),
+        })
+    }
+}
+
+struct Entity {
+	texture: Texture,
+	position: Vec2<f32>
+}
+
+impl Entity {
+    fn new(texture: Texture, position: Vec2<f32>) -> Entity {
+        Entity { texture, position }
+    }
 }
