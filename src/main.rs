@@ -7,10 +7,7 @@ fn main() -> tetra::Result {
 	ContextBuilder::new("Pong", 640, 480)
 		.quit_on_escape(true)
 		.build()?
-		.run(|ctx| {
-			let paddle_texture = Texture::new(ctx, "./src/assets/paddleBlue.png")?;
-			Ok(GameState { paddle_texture })
-		})
+		.run(GameState::new)
 }
 
 struct GameState {
@@ -22,5 +19,12 @@ impl State for GameState {
 		graphics::clear(ctx, Color::rgb(0.1, 0.5, 0.9));
 
 		Ok(())
+	}
+}
+
+impl GameState {
+	fn new(ctx: &mut Context) -> tetra::Result<GameState> {
+		let paddle_texture = Texture::new(ctx, "./src/assets/paddleBlue.png")?;
+		Ok(GameState { paddle_texture })
 	}
 }
