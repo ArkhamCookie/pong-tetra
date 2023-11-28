@@ -1,6 +1,8 @@
+// use tetra::graphics::{self, Color, Rectangle, Texture};
 use tetra::graphics::{self, Color, Texture};
 use tetra::input::{self, Key};
 use tetra::math::Vec2;
+// use tetra::window;
 use tetra::{Context, ContextBuilder, State};
 
 const WINDOW_WIDTH: f32 = 640.0;
@@ -18,6 +20,35 @@ fn main() -> tetra::Result {
 struct GameState {
     player1: Entity,
     player2: Entity,
+	ball: Entity,
+}
+
+impl GameState {
+    fn new(ctx: &mut Context) -> tetra::Result<GameState> {
+        let player1_texture = Texture::new(ctx, "./src/assets/paddleBlue.png")?;
+        let player1_position = Vec2::new(
+            16.0,
+            (WINDOW_HEIGHT - player1_texture.height() as f32) / 2.0,
+        );
+
+        let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
+        let player2_position = Vec2::new(
+            WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
+            (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
+        );
+
+		let ball_texture = Texture::new(ctx, "./src/assets/ballGrey.png")?;
+		let ball_position = Vec2::new(
+			WINDOW_HEIGHT / 2.0 - ball_texture.width() as f32 / 2.0,
+			WINDOW_HEIGHT / 2.0 - ball_texture.height() as f32 / 2.0,
+		);
+
+        Ok(GameState {
+            player1: Entity::new(player1_texture, player1_position),
+            player2: Entity::new(player2_texture, player2_position),
+			ball: Entity::new(ball_texture, ball_position),
+        })
+    }
 }
 
 impl State for GameState {
@@ -57,30 +88,10 @@ impl State for GameState {
 
         self.player1.texture.draw(ctx, self.player1.position);
         self.player2.texture.draw(ctx, self.player2.position);
+		self.ball.texture.draw(ctx, self.ball.position);
 
 		Ok(())
 	}
-}
-
-impl GameState {
-    fn new(ctx: &mut Context) -> tetra::Result<GameState> {
-        let player1_texture = Texture::new(ctx, "./src/assets/paddleBlue.png")?;
-        let player1_position = Vec2::new(
-            16.0,
-            (WINDOW_HEIGHT - player1_texture.height() as f32) / 2.0,
-        );
-
-        let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
-        let player2_position = Vec2::new(
-            WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
-            (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
-        );
-
-        Ok(GameState {
-            player1: Entity::new(player1_texture, player1_position),
-            player2: Entity::new(player2_texture, player2_position),
-        })
-    }
 }
 
 struct Entity {
