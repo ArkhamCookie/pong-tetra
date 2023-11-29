@@ -1,7 +1,7 @@
 use tetra::graphics::{self, Color, Rectangle, Texture};
 use tetra::input::{self, Key};
 use tetra::math::Vec2;
-// use tetra::window;
+use tetra::window;
 use tetra::{Context, ContextBuilder, State};
 
 const WINDOW_WIDTH: f32 = 640.0;
@@ -146,6 +146,20 @@ impl State for GameState {
 
 			// Apply the spin
 			self.ball.velocity.y += PADDLE_SPIN * -offset;
+		}
+
+		if self.ball.position.y <= 0.0 || self.ball.position.y + self.ball.height() >= WINDOW_HEIGHT {
+			self.ball.velocity.y = -self.ball.velocity.y;
+		}
+
+		if self.ball.position.x < 0.0 {
+			window::quit(ctx);
+			println!("Player 2 wins!");
+		}
+
+		if self.ball.position.x > WINDOW_WIDTH {
+			window::quit(ctx);
+			println!("Player 1 wins!");
 		}
 
 		Ok(())
