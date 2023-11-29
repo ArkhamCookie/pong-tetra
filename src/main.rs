@@ -86,7 +86,7 @@ impl GameState {
 
 		let ball_texture = Texture::new(ctx, "./src/assets/ballGrey.png")?;
 		let ball_position = Vec2::new(
-			WINDOW_HEIGHT / 2.0 - ball_texture.width() as f32 / 2.0,
+			WINDOW_WIDTH / 2.0 - ball_texture.width() as f32 / 2.0,
 			WINDOW_HEIGHT / 2.0 - ball_texture.height() as f32 / 2.0,
 		);
 		let ball_velocity = Vec2::new(-BALL_SPEED, 0.0);
