@@ -136,10 +136,6 @@ impl State for GameState {
 				None
 			};
 
-		if paddle_hit.is_some() {
-			self.ball.velocity.x = -self.ball.velocity.x
-		}
-
 		if let Some(paddle) = paddle_hit {
 			// Increase velocity, then flip it
 			self.ball.velocity.x =
