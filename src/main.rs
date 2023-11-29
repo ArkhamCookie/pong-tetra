@@ -8,8 +8,10 @@ const WINDOW_WIDTH: f32 = 640.0;
 const WINDOW_HEIGHT: f32 = 480.0;
 
 const PADDLE_SPEED: f32 = 8.0;
+const PADDLE_SPIN: f32 = 4.0;
 
 const BALL_SPEED: f32 = 5.0;
+const BALL_ACC: f32 = 0.05;
 
 fn main() -> tetra::Result {
 	ContextBuilder::new("Pong", WINDOW_WIDTH as i32, WINDOW_HEIGHT as i32)
@@ -51,6 +53,13 @@ impl Entity {
 			self.position.y,
 			self.width(),
 			self.height(),
+		)
+	}
+
+	fn centre(&self) -> Vec2<f32> {
+		Vec2::new(
+			self.position.x + (self.width() / 2.0),
+			self.position.y + (self.height() / 2.0),
 		)
 	}
 }
@@ -129,6 +138,20 @@ impl State for GameState {
 
 		if paddle_hit.is_some() {
 			self.ball.velocity.x = -self.ball.velocity.x
+		}
+
+		if let Some(paddle) = paddle_hit {
+			// Increase velocity, then flip it
+			self.ball.velocity.x =
+				-(self.ball.velocity.x +
+					(BALL_ACC * self.ball.velocity.x.signum()));
+
+			let offset =
+				paddle.centre().y -
+					self.ball.centre().y / paddle.height();
+
+			// Apply the spin
+			self.ball.velocity.y += PADDLE_SPIN * -offset;
 		}
 
 		Ok(())
