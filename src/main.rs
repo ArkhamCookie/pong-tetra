@@ -112,12 +112,6 @@ impl State for GameState {
             self.player2.position.y += PADDLE_SPEED;
         }
 
-        // let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
-        // let _player2_position = Vec2::new(
-        //     WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
-        //     (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
-        // );
-
 		self.ball.position += self.ball.velocity;
 
 		let player1_bounds = self.player1.bounds();
