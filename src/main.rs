@@ -47,7 +47,14 @@ impl Entity {
 		self.texture.height() as f32
 	}
 
-    fn bounds(&self) -> Rectangle {
+	fn centre(&self) -> Vec2<f32> {
+		Vec2::new(
+			self.position.x + (self.width() / 2.0),
+			self.position.y + (self.height() / 2.0),
+		)
+	}
+
+	fn bounds(&self) -> Rectangle {
         Rectangle::new(
             self.position.x,
             self.position.y,
@@ -56,12 +63,6 @@ impl Entity {
         )
     }
 
-	fn centre(&self) -> Vec2<f32> {
-		Vec2::new(
-			self.position.x + (self.width() / 2.0),
-			self.position.y + (self.height() / 2.0),
-		)
-	}
 }
 
 struct GameState {
