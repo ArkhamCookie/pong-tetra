@@ -1,5 +1,4 @@
-// use tetra::graphics::{self, Color, Rectangle, Texture};
-use tetra::graphics::{self, Color, Texture};
+use tetra::graphics::{self, Color, Rectangle, Texture};
 use tetra::input::{self, Key};
 use tetra::math::Vec2;
 // use tetra::window;
@@ -17,6 +16,43 @@ fn main() -> tetra::Result {
 		.quit_on_escape(true)
 		.build()?
 		.run(GameState::new)
+}
+
+struct Entity {
+	texture: Texture,
+	position: Vec2<f32>,
+	velocity: Vec2<f32>,
+}
+
+impl Entity {
+    fn new(texture: Texture, position: Vec2<f32>) -> Entity {
+		Entity::with_velocity(texture, position, Vec2::zero())
+    }
+
+	fn with_velocity(texture: Texture, position: Vec2<f32>, velocity: Vec2<f32>) -> Entity {
+		Entity {
+			texture,
+			position,
+			velocity,
+		}
+	}
+
+	fn width(&self) -> f32 {
+   		self.texture.width() as f32
+	}
+
+	fn height(&self) -> f32 {
+		self.texture.height() as f32
+	}
+
+	fn bounds(&self) -> Rectangle {
+		Rectangle::new(
+			self.position.x,
+			self.position.y,
+			self.width(),
+			self.height(),
+		)
+	}
 }
 
 struct GameState {
@@ -76,13 +112,30 @@ impl State for GameState {
             self.player2.position.y += PADDLE_SPEED;
         }
 
-        let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
-        let _player2_position = Vec2::new(
-            WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
-            (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
-        );
+        // let player2_texture = Texture::new(ctx, "./src/assets/paddleRed.png")?;
+        // let _player2_position = Vec2::new(
+        //     WINDOW_WIDTH - player2_texture.width() as f32 - 16.0,
+        //     (WINDOW_HEIGHT - player2_texture.height() as f32) / 2.0,
+        // );
 
 		self.ball.position += self.ball.velocity;
+
+		let player1_bounds = self.player1.bounds();
+		let player2_bounds = self.player2.bounds();
+		let ball_bounds = self.ball.bounds();
+
+		let paddle_hit =
+			if ball_bounds.intersects(&player1_bounds) {
+				Some(&self.player1)
+			} else if ball_bounds.intersects(&player2_bounds) {
+				Some(&self.player2)
+			} else {
+				None
+			};
+
+		if paddle_hit.is_some() {
+			self.ball.velocity.x = -self.ball.velocity.x
+		}
 
 		Ok(())
 
@@ -96,25 +149,5 @@ impl State for GameState {
 		self.ball.texture.draw(ctx, self.ball.position);
 
 		Ok(())
-	}
-}
-
-struct Entity {
-	texture: Texture,
-	position: Vec2<f32>,
-	velocity: Vec2<f32>,
-}
-
-impl Entity {
-    fn new(texture: Texture, position: Vec2<f32>) -> Entity {
-		Entity::with_velocity(texture, position, Vec2::zero())
-    }
-
-	fn with_velocity(texture: Texture, position: Vec2<f32>, velocity: Vec2<f32>) -> Entity {
-		Entity {
-			texture,
-			position,
-			velocity,
-		}
 	}
 }
