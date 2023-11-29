@@ -47,14 +47,14 @@ impl Entity {
 		self.texture.height() as f32
 	}
 
-	fn bounds(&self) -> Rectangle {
-		Rectangle::new(
-			self.position.x,
-			self.position.y,
-			self.width(),
-			self.height(),
-		)
-	}
+    fn bounds(&self) -> Rectangle {
+        Rectangle::new(
+            self.position.x,
+            self.position.y,
+            self.width(),
+            self.height(),
+        )
+    }
 
 	fn centre(&self) -> Vec2<f32> {
 		Vec2::new(
