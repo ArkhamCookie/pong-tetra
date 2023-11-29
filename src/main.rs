@@ -139,13 +139,10 @@ impl State for GameState {
 
 		if let Some(paddle) = paddle_hit {
 			// Increase velocity, then flip it
-			self.ball.velocity.x =
-				-(self.ball.velocity.x +
-					(BALL_ACC * self.ball.velocity.x.signum()));
+			self.ball.velocity.x = -(self.ball.velocity.x + (BALL_ACC * self.ball.velocity.x.signum()));
 
-			let offset =
-				paddle.centre().y -
-					self.ball.centre().y / paddle.height();
+			// Get offs between paddle and ball
+			let offset = paddle.centre().y - self.ball.centre().y / paddle.height();
 
 			// Apply the spin
 			self.ball.velocity.y += PADDLE_SPIN * -offset;
