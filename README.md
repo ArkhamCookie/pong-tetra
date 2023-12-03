@@ -4,6 +4,16 @@ A simple [Pong](https://wikipedia.org/wiki/Pong) clone writen in [Rust](https://
 
 This *game* created with the help of the "[Creating a Pong clone with Rust and Tetra](https://tetra.seventeencups.net/tutorial)" tutorial.
 
+## Usage
+
+```shell
+git clone https://github.com/ArkhamCookie/pong-tetra
+cd pong-tetra
+cargo run src/main.rs
+```
+
+---
+
 ## Attributions
 
 - [Joe Clay](https://www.seventeencups.net) and [the contributors for Tetra](https://github.com/17cupsofcoffee/tetra/graphs/contributors)
