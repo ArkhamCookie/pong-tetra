@@ -9,7 +9,7 @@ This *game* created with the help of the "[Creating a Pong clone with Rust and T
 ```shell
 git clone https://github.com/ArkhamCookie/pong-tetra
 cd pong-tetra
-cargo run src/main.rs
+cargo run
 ```
 
 ---
